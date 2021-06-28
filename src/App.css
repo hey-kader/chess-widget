@@ -1,0 +1,25 @@
+.wrapper {
+margin: 0;
+padding: 0;
+background: #f9d79d;
+}
+
+.App {
+  text-align: center;
+}
+
+#next:active, #reset:active {
+    display: inline;
+}
+.App-header {
+  background-color: white;
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: black;
+}
+.App-link {
+  color: #61dafb;
+}
+
