@@ -4,11 +4,8 @@ import axios from "axios"
 import ReactDOM from "react-dom"
 import Thanks from "./Thanks"
 import "./Test.css"
-import  {Button, Card} from 'react-bootstrap' 
+import  {Button, Card, Tabs, Tab} from 'react-bootstrap' 
 import 'bootstrap/dist/css/bootstrap.min.css'
-
-
-
 
 let a = []
 let titles = []
@@ -82,8 +79,6 @@ class Test extends Component {
     }
     componentDidMount() {
         console.log(this.props)
-
-	// set zoom to 0,0
     }
     
     render () {
@@ -91,25 +86,31 @@ class Test extends Component {
         let t = it.next().value
         return (
             <div className="wrapper">
-		<Card>
-		<Card.Header>
-		<Card.Title>
-                <h3 style={{margin: '1rem 0rem', display: 'block', width: '100%'}} id="title"></h3>
-		</Card.Title>
-		</Card.Header>
-		<Card.Body>
-                <h3 id="fen" hidden></h3>
-                <h2 id="playerMove" hidden></h2>
-
-                <div id="board" className="wrapper">
-                    {typeof(t) !== "undefined" ? <Board fen={t} /> : ""}
-                </div>
-		</Card.Body>
-		<Card.Footer>
-                <Button onClick={() => handle_click(it.next().value, this.props)} id="next" >next</Button>
-                <Button style={{marginLeft: '0.2rem'}} id="reset" onClick={() => reset_click()}>reset</Button>
-		</Card.Footer>
-		</Card>
+		<Tabs defaultActiveKey="game" id="game">
+		    <Tab eventKey="game" title="game">
+			<Card>
+			    <Card.Header>
+				<Card.Title>
+				    <h3 style={{margin: '1rem 0rem', display: 'block', width: '100%'}} id="title"></h3>
+				</Card.Title>
+			    </Card.Header>
+			    <Card.Body>
+				<h3 id="fen" hidden></h3>
+				<h2 id="playerMove" hidden></h2>
+				<div id="board" className="wrapper">
+				    {typeof(t) !== "undefined" ? <Board fen={t} /> : ""}
+				</div>
+			    </Card.Body>
+			    <Card.Footer>
+				<Button onClick={() => handle_click(it.next().value, this.props)} id="next" >next</Button>
+				<Button style={{marginLeft: '0.2rem'}} id="reset" onClick={() => reset_click()}>reset</Button>
+			    </Card.Footer>
+			</Card>
+		    </Tab>
+		    <Tab eventKey="score" title="score">
+			<h1>hi</h1>
+		    </Tab>
+		</Tabs>
             </div>
         )
     }
