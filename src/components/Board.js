@@ -11,8 +11,8 @@ function Board (props) {
     let game = useRef(null)
     useEffect (() => {
 		if (game === null) {
-			document.getElementById("next").style.visibility = "hidden"
-			document.getElementById("reset").style.visibility = "hidden"
+			document.getElementById("next").disabled = true
+			document.getElementById("reset").disabled = true 
 		}
 		else {
 			game.current = new Chess (fen)
@@ -32,8 +32,8 @@ function Board (props) {
         console.log(targetSquare)
         document.getElementById("playerMove").innerHTML = targetSquare
 
-        document.getElementById("next").style.display = "inline-block"
-        document.getElementById("reset").style.display = "inline-block"
+        document.getElementById("next").disabled = false 
+        document.getElementById("reset").disabled = false 
     }
     
     return (

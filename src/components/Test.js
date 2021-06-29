@@ -4,7 +4,7 @@ import axios from "axios"
 import ReactDOM from "react-dom"
 import Thanks from "./Thanks"
 import "./Test.css"
-import  {Button, Card, Tabs, Tab, Table} from 'react-bootstrap' 
+import  {Button, Card, Tabs, Tab, Table, Alert} from 'react-bootstrap' 
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 let a = []
@@ -15,10 +15,14 @@ function* iter (fenlist) {
     for (var i = 0; i < fenlist.length ; i++) {
         if (typeof(fenlist[i].fen) !== "undefined") {
 			append_to_table()
+
             document.getElementById("title").innerHTML = fenlist[i].id + '. '+ fenlist[i].color + ' To Move'
             document.getElementById("fen").innerHTML = fenlist[i].fen
             document.getElementById("answer").innerHTML = fenlist[i].answer
             document.getElementById("id").innerHTML = fenlist[i].id
+			document.getElementById("next").disabled = true
+			document.getElementById("reset").disabled = true
+
             a.push(fenlist[i].answer)
             titles.push(fenlist[i].title)
             console.log(a)
@@ -32,6 +36,7 @@ let ar = []
 
 function append_to_table () {
 
+	
 	let row = document.createElement("tr")
 
 	let num = document.createElement("td")
@@ -46,13 +51,25 @@ function append_to_table () {
 	let z = document.createElement("td")
 	z.innerHTML = ans
 
-
 	console.log(z)
 	let clone = row.cloneNode(true)
 	clone.appendChild(z)
-	
 
-	document.getElementById("table-body").append(clone)
+	console.log('debug')
+	console.log(sub)
+	console.log(z)
+	if (sub.innerHTML === z.innerHTML) {
+		console.log("success")
+		clone.style.background = "#28a745"		
+	}
+	else {
+		clone.style.background = "#dc3545"
+	}
+	if (sub.innerHTML.length != 0) { 
+		document.getElementById("table-body").append(clone)
+	}
+
+
 	
 }
 
@@ -65,11 +82,11 @@ function handle_click (f, pr) {
         //document.getElementById("playerMove").innerHTML = ""
         //document.getElementById("id").innerHTML = ""
         //document.getElementById("answer").innerHTML = ""
+	document.getElementById('next').disabled = true 
+	document.getElementById('reset').disabled = true
         ReactDOM.unmountComponentAtNode(document.getElementById("board"))
         const board = <Board fen={f} />
             ReactDOM.render(board, document.getElementById("board"))
-	document.getElementById('next').style.display = 'none'
-	document.getElementById('reset').style.display = 'none'
     }
 
     else {
@@ -89,11 +106,9 @@ function reset_click () {
     ReactDOM.unmountComponentAtNode(document.getElementById("board"))
     const board = <Board fen={fen} />
         ReactDOM.render(board, document.getElementById("board"))
-    document.getElementById('next').style.display = 'none'
-    document.getElementById('reset').style.display = 'none'
-	document.getelementbyid("playermove").innerhtml = ""
-	document.getelementbyid("id").innerhtml = ""
-	document.getelementbyid("answer").innerhtml = ""
+    document.getElementById('next').disabled = true
+    document.getElementById('reset').disabled = true
+	document.getElementById("playerMove").innerHTML = ""
 }
 
 const api = axios.create ({
@@ -116,7 +131,7 @@ class Test extends Component {
         })
 
     }
-    componentDidMount() {
+    componentWillRecieveProps() {
         console.log(this.props)
     }
 
@@ -148,8 +163,8 @@ class Test extends Component {
 						</div>
 						</Card.Body>
 						<Card.Footer>
-						<Button onClick={() => handle_click(it.next().value, this.props)} id="next" >next</Button>
-						<Button style={{marginLeft: '0.2rem'}} id="reset" onClick={() => reset_click()}>reset</Button>
+						<Button style={{width: '150px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disabled={false}>next</Button>
+						<Button style={{marginLeft: '0.2rem', width: '150px'}} id="reset" onClick={() => reset_click()} variant="warning" disabled={false}>reset</Button>
 						</Card.Footer>
 					</Card>
 					</Tab>
@@ -163,7 +178,7 @@ class Test extends Component {
 									</Card.Title>
 								</Card.Header>
 
-								<Card.Body>
+								<Card.Body style={{width: "370px"}}>
 									<Table striped bordered hover>
 										<thead>
 											<tr>

@@ -31,10 +31,10 @@ function Thanks (props) {
             const h = document.createElement("h5")
             h.appendChild(document.createTextNode(title))
             if (submit[i] === answers[i]) {
-                h.style.background = "green"
+                h.variant = "success"
             }
             else {
-                h.style.background = "red"
+                h.variant = "warning"
             }
             console.log(submit[i])
             console.log(answers[i])
