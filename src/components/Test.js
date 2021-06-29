@@ -46,6 +46,7 @@ function append_to_table () {
 	let z = document.createElement("td")
 	z.innerHTML = ans
 
+
 	console.log(z)
 	let clone = row.cloneNode(true)
 	clone.appendChild(z)
@@ -75,9 +76,9 @@ function handle_click (f, pr) {
 
         ar.push(document.getElementById("playerMove").innerHTML)
         console.log(f)
-		document.getelementbyid("playermove").innerhtml = ""
-		document.getelementbyid("id").innerhtml = ""
-		document.getelementbyid("answer").innerhtml = ""
+		document.getElementById("playerMove").innerHTML = ""
+		document.getElementById("id").innerHTML = ""
+		document.getElementById("answer").innerHTML = ""
         const thanks = <Thanks titles={titles} answers={a} user={pr} submit={ar} />
         ReactDOM.render(thanks, document.getElementById("root"))
     }

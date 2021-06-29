@@ -1,5 +1,9 @@
 import React, { Component, useState, useEffect } from "react"
+import 'bootstrap/dist/css/bootstrap.min.css'
+import {Button, Card} from 'react-bootstrap'
 import axios from 'axios'
+import Test from './Test'
+import ReactDOM from 'react-dom'
 
 function Thanks (props) {
 
@@ -27,10 +31,10 @@ function Thanks (props) {
             const h = document.createElement("h5")
             h.appendChild(document.createTextNode(title))
             if (submit[i] === answers[i]) {
-                h.style.color = "green"
+                h.style.background = "green"
             }
             else {
-                h.style.color = "red"
+                h.style.background = "red"
             }
             console.log(submit[i])
             console.log(answers[i])
@@ -64,13 +68,22 @@ function Thanks (props) {
 
     titles_show()
     return (
-        <div>
-	    <h2>Score Report: </h2>
-            {make_obj()}
-            <div id="ul" style={{borderStyle: 'groove', borderRadius: '5px', padding: '1rem'}}>
-            </div>
-            <h2>Score: {score()}%</h2>
-        </div>
+		<Card>
+			<div>
+			<Card.Header>
+				<Card.Title><h2>Score Report: </h2></Card.Title>
+			</Card.Header>
+			{make_obj()}
+			<Card.Body>
+				<div id="ul" style={{borderStyle: 'groove', borderRadius: '5px', padding: '1rem'}}>
+				</div>
+				<h2>Score: {score()}%</h2>
+			</Card.Body>
+			<Card.Footer>
+				<Button onClick={() => ReactDOM.render(<Test />, document.getElementById('root'))}>Try Again</Button>
+			</Card.Footer>
+			</div>
+		</Card>
     )
 }
 export default Thanks
