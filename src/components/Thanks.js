@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from "react"
 import axios from 'axios'
 
 function Thanks (props) {
+
     const [submit, setSubmit] = useState(props.submit)
     const answers = props.answers
     const user = props.user
