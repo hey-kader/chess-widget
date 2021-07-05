@@ -10,18 +10,27 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 let a = []
 let titles = []
 
+require ('./Test.css')
+require ('../App.css')
+
 
 function* iter (fenlist) {
     for (var i = 0; i < fenlist.length ; i++) {
         if (typeof(fenlist[i].fen) !== "undefined") {
             append_to_table()
-
-            document.getElementById("title").innerHTML = fenlist[i].id + '. '+ fenlist[i].color + ' To Move'
+            let c = ''
+            if  (fenlist[i].color == 'w')
+              c = 'White' 
+            else {
+              c = "Black"
+            } 
+            document.getElementById("title").innerHTML = fenlist[i].id + '. '+ c + ' to Move'
             document.getElementById("fen").innerHTML = fenlist[i].fen
             document.getElementById("answer").innerHTML = fenlist[i].answer
             document.getElementById("id").innerHTML = fenlist[i].id
-document.getElementById("next").disabled = true 
-			document.getElementById("reset").disabled = true 
+
+            document.getElementById("next").disabled = true 
+            document.getElementById("reset").disabled = true 
 
             a.push(fenlist[i].answer)
             titles.push(fenlist[i].title)
@@ -45,7 +54,10 @@ function append_to_table () {
 
 	let sub = document.createElement("td")
 	sub.innerHTML = document.getElementById("playerMove").innerHTML
-	row.appendChild(sub)
+
+  if (sub != 'p') {
+    row.appendChild(sub)
+  }
 
 	let ans = document.getElementById("answer").innerHTML 
 	let z = document.createElement("td")
@@ -80,8 +92,8 @@ function handle_click (f, pr) {
         //document.getElementById("playerMove").innerHTML = ""
         //document.getElementById("id").innerHTML = ""
         //document.getElementById("answer").innerHTML = ""
-document.getElementById('next').disabled = true 
-document.getElementById('reset').disabled = true
+        document.getElementById('next').disabled = true 
+        document.getElementById('reset').disabled = true
         ReactDOM.unmountComponentAtNode(document.getElementById("board"))
         const board = <Board fen={f} />
             ReactDOM.render(board, document.getElementById("board"))
@@ -140,8 +152,12 @@ class Test extends Component {
 		console.log('update')
 
 	}
-    
     render () {
+      const style = {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center" 
+      }
         const it = iter(this.state.fens)
         let t = it.next().value
         return (
@@ -154,7 +170,7 @@ class Test extends Component {
 							<h3 style={{margin: '1rem 0rem', display: 'block', width: '100%'}} id="title"></h3>
 						</Card.Title>
 						</Card.Header>
-						<Card.Body>
+						<Card.Body style={style}>
 						<h3 id="fen" hidden></h3>
 						<h2 id="playerMove" hidden></h2>
 						<h2 id="answer" hidden></h2>
@@ -163,23 +179,22 @@ class Test extends Component {
 							{typeof(t) !== "undefined" ? <Board fen={t} /> : ""}
 						</div>
 						</Card.Body>
-						<Card.Footer>
-						<Button style={{width: '150px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disable={true}>next</Button>
-						<Button style={{marginLeft: '0.2rem', width: '150px'}} id="reset" onClick={() => reset_click()} variant="warning" disable={true}>reset</Button>
+						<Card.Footer style={style}>
+              <Button style={{width: '160px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disable={true}>next</Button>
+              <Button style={{marginLeft: '0.2rem', width: '160px'}} id="reset" onClick={() => reset_click()} variant="warning" disable={true}>reset</Button>
 						</Card.Footer>
 					</Card>
 					</Tab>
 
 					<Tab eventKey="score" title="score">
 							<Card>
-
 								<Card.Header>
 									<Card.Title>
-										<h3 style={{margin: '1rem 0rem', display: 'block', width: '100%'}}>Score</h3>
+										<h3 style={{margin: '1rem 0rem', display: 'block', width: '90%'}}>Score</h3>
 									</Card.Title>
 								</Card.Header>
 
-								<Card.Body style={{width: "370px"}}>
+								<Card.Body style={style}>
 									<Table striped bordered hover>
 										<thead>
 											<tr>

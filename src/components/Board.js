@@ -10,11 +10,11 @@ function Board (props) {
 
     let game = useRef(null)
     useEffect (() => {
-		if (game !== null) {
-			game.current = new Chess (fen)
-		}
+      if (game !== null) {
+        game.current = new Chess (fen)
+        console.log(window.innerWidth)
+      }
     }, [])
-
 
     const onDrop = ({sourceSquare, targetSquare}) => {
         let move = game.current.move({
@@ -25,20 +25,28 @@ function Board (props) {
         if (move === null) return;
         setFen(game.current.fen())
 
-        var notation = move.piece+targetSquare
+        if (move.piece != 'p') {
+          var notation = move.piece+targetSquare
+        }
+        else {
+          var notation = targetSquare
+        }
         console.log(notation)
         document.getElementById("playerMove").innerHTML = notation 
 
-document.getElementById("next").disabled = false 
-document.getElementById("reset").disabled = false 
+        document.getElementById("next").disabled = false 
+        document.getElementById("reset").disabled = false 
+
     }
-    
+
+    console.log(window.innerWidth)
+
     return (
         <div id="board" className="wrapper" >
             <Chessboard
                 position={fen}
                 onDrop={onDrop}
-		width={"330"}
+                width={"330"}
             />
         </div>
     )

@@ -46,6 +46,21 @@ async function accessSpreadsheet() {
 
 accessSpreadsheet()
 
+async function write_email (n, e) {
+
+  const doc = new GoogleSpreadsheet('1NwgE2O3xMP30vYXEU90iCKUHVHtULrRxKmZGcd820Yg');
+  await promisify (doc.useServiceAccountAuth)(creds)
+  const info = await promisify(doc.getInfo)()
+  var new_sheet = info.worksheets[1]
+  console.log(new_sheet.title)
+  let rows = await promisify (new_sheet.getRows) ({
+    offset: 1
+  })
+  const count = new_sheet.rowCount
+  console.log(count)
+  
+}
+
 var app = express()
 
 app.use(express.static(path.join(__dirname, 'build')))
@@ -67,7 +82,9 @@ app.post('/chess/score/', (req, res) => {
 })
 
 app.post('/chess/email/', (req, res) => {
-  console.log(req.body)
+  console.log(req.body.name)
+  console.log(req.body.email)
+  write_email (req.body.name, req.body.email)
 })
 
 const ssl = {

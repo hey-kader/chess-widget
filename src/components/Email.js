@@ -24,13 +24,14 @@ baseURL: 'https://kaderarnold.com:4431/chess'
     api.post('/email/', obj)
     .then( (response) => console.log(response) )
 
-    ReactDOM.unmountComponentAtNode(document.getElementById('form'))
+//ReactDOM.unmountComponentAtNode(document.getElementById('root'))
     const element = <Test />
     ReactDOM.render(element, document.getElementById('root'))
   }
 
+  require('../App.css')
   return (
-    <Form id="form" style={{margin: 'auto'}} onSubmit={(e) => submit_handler(e)}>
+    <Form id="form" style={{margin: 'auto', alignItems: 'center', justifyContent: 'center', display: 'inline-block'}} onSubmit={(e) => submit_handler(e)}>
       <Form.Group controlId="formBasicPassword">
         <Form.Label>Name</Form.Label>
           <Form.Control type="text" onChange={(e) => setName(e.target.value)} placeholder="Bobby Fischer" />
