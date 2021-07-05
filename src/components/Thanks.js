@@ -7,36 +7,34 @@ import ReactDOM from 'react-dom'
 
 function Thanks (props) {
 
-    const [submit, setSubmit] = useState(props.submit)
-    const answers = props.answers
-    const user = props.user
-    const titles = props.titles
-    
+    const [titles, setTitles] = useState(props.titles)
+    const [answers, setAnswers] = useState(props.answers)
+    const [moves, setMoves] = useState(props.moves)
+
     function score () {
         var count = 0
-        for (var i = 0; i < 40; i++) {
-            if (props.submit[i] === props.answers[i]) {
+        for (var i = 0; i < answers.length; i++) {
+            if (answers[i] === moves[i]) {
                 count++
             }
-        }
-
+        } 
         return parseFloat(count/40.0 * 100)
     }
 
     async function titles_show () {
         await document.getElementById("ul")
         let ul = document.getElementById("ul")
-        for (var i = 0; i < titles.length; i++) {
-            var title = (i+1) + '.' + titles[i]
+        for (var i = 0; i < answers.length; i++) {
+            var answer = (i+1) + '.' + titles[i]
             const h = document.createElement("h5")
-            h.appendChild(document.createTextNode(title))
-            if (submit[i] === answers[i]) {
-                h.variant = "success"
+            h.appendChild(document.createTextNode(answer))
+            if (moves[i] === answers[i]) {
+                h.style.color = "green"
             }
             else {
-                h.variant = "warning"
+                h.style.color = "red"
             }
-            console.log(submit[i])
+            console.log(moves[i])
             console.log(answers[i])
             ul.appendChild(h)
             
@@ -45,17 +43,14 @@ function Thanks (props) {
     }
     function make_obj () {
 
-        let obj = {
-            student: user['student'],
-            name: user['name'],
-            email: user['email'],
-            age: user['age'],
-            data: submit
+        var obj = {}
+        for (var i = 0; i < answers.length; i++) {
+          obj[i+1] = moves[i] 
         }
 
         console.log(obj)
         // axios post request
-        axios.post('https://kaderarnold.com:4431/chess/', JSON.stringify(obj))
+        axios.post('https://kaderarnold.com:4431/chess/score', JSON.stringify(obj))
             .then(response => {
                 console.log(response)
             })
@@ -80,7 +75,7 @@ function Thanks (props) {
 				<h2>Score: {score()}%</h2>
 			</Card.Body>
 			<Card.Footer>
-				<Button onClick={() => ReactDOM.render(<Test />, document.getElementById('root'))}>Try Again</Button>
+				<Button onClick={() => window.location.href = "https://kaderarnold.com:4431/chess/"}>Try Again</Button>
 			</Card.Footer>
 			</div>
 		</Card>

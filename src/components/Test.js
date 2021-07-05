@@ -14,14 +14,14 @@ let titles = []
 function* iter (fenlist) {
     for (var i = 0; i < fenlist.length ; i++) {
         if (typeof(fenlist[i].fen) !== "undefined") {
-			append_to_table()
+            append_to_table()
 
             document.getElementById("title").innerHTML = fenlist[i].id + '. '+ fenlist[i].color + ' To Move'
             document.getElementById("fen").innerHTML = fenlist[i].fen
             document.getElementById("answer").innerHTML = fenlist[i].answer
             document.getElementById("id").innerHTML = fenlist[i].id
-			document.getElementById("next").disabled = true
-			document.getElementById("reset").disabled = true
+document.getElementById("next").disabled = true 
+			document.getElementById("reset").disabled = true 
 
             a.push(fenlist[i].answer)
             titles.push(fenlist[i].title)
@@ -55,15 +55,13 @@ function append_to_table () {
 	let clone = row.cloneNode(true)
 	clone.appendChild(z)
 
-	console.log('debug')
 	console.log(sub)
 	console.log(z)
 	if (sub.innerHTML === z.innerHTML) {
-		console.log("success")
-		clone.style.background = "#28a745"		
+		clone.style.color = "#28a74f"		
 	}
 	else {
-		clone.style.background = "#dc3545"
+		clone.style.color = "#dc354f"
 	}
 	if (sub.innerHTML.length != 0) { 
 		document.getElementById("table-body").append(clone)
@@ -82,8 +80,8 @@ function handle_click (f, pr) {
         //document.getElementById("playerMove").innerHTML = ""
         //document.getElementById("id").innerHTML = ""
         //document.getElementById("answer").innerHTML = ""
-	document.getElementById('next').disabled = true 
-	document.getElementById('reset').disabled = true
+document.getElementById('next').disabled = true 
+document.getElementById('reset').disabled = true
         ReactDOM.unmountComponentAtNode(document.getElementById("board"))
         const board = <Board fen={f} />
             ReactDOM.render(board, document.getElementById("board"))
@@ -96,7 +94,7 @@ function handle_click (f, pr) {
 		document.getElementById("playerMove").innerHTML = ""
 		document.getElementById("id").innerHTML = ""
 		document.getElementById("answer").innerHTML = ""
-        const thanks = <Thanks titles={titles} answers={a} user={pr} submit={ar} />
+        const thanks = <Thanks titles={titles} moves={ar} answers={a} />
         ReactDOM.render(thanks, document.getElementById("root"))
     }
 }
@@ -125,14 +123,17 @@ class Test extends Component {
     
     constructor () {
         super()
-        api.get ('/fenlist.json').then (res => {
+      api.get ('/load').then (res => {
             this.setState({fens: res.data})
-            console.log(res.data)
+            console.log(this.state.fens)
         })
-
     }
+
     componentWillRecieveProps() {
         console.log(this.props)
+    }
+    componentDidMount() {
+      window.scrollTo(0, 1)
     }
 
 	componentWillUpdate() {
@@ -163,8 +164,8 @@ class Test extends Component {
 						</div>
 						</Card.Body>
 						<Card.Footer>
-						<Button style={{width: '150px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disabled={false}>next</Button>
-						<Button style={{marginLeft: '0.2rem', width: '150px'}} id="reset" onClick={() => reset_click()} variant="warning" disabled={false}>reset</Button>
+						<Button style={{width: '150px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disable={true}>next</Button>
+						<Button style={{marginLeft: '0.2rem', width: '150px'}} id="reset" onClick={() => reset_click()} variant="warning" disable={true}>reset</Button>
 						</Card.Footer>
 					</Card>
 					</Tab>

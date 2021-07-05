@@ -10,11 +10,7 @@ function Board (props) {
 
     let game = useRef(null)
     useEffect (() => {
-		if (game === null) {
-			document.getElementById("next").disabled = true
-			document.getElementById("reset").disabled = true 
-		}
-		else {
+		if (game !== null) {
 			game.current = new Chess (fen)
 		}
     }, [])
@@ -29,11 +25,12 @@ function Board (props) {
         if (move === null) return;
         setFen(game.current.fen())
 
-        console.log(targetSquare)
-        document.getElementById("playerMove").innerHTML = targetSquare
+        var notation = move.piece+targetSquare
+        console.log(notation)
+        document.getElementById("playerMove").innerHTML = notation 
 
-        document.getElementById("next").disabled = false 
-        document.getElementById("reset").disabled = false 
+document.getElementById("next").disabled = false 
+document.getElementById("reset").disabled = false 
     }
     
     return (
