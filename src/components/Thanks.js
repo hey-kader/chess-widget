@@ -58,9 +58,10 @@ function Thanks (props) {
         }
         console.log(o)
         // axios post request
-        api.post('/score', JSON.stringify(o))
+        api.post('/score', o)
             .then(response => {
                 console.log(response)
+                console.log(JSON.parse(response))
             })
             .catch(error => {
                 console.log(error)

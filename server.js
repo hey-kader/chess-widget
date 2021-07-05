@@ -49,9 +49,9 @@ accessSpreadsheet()
 var app = express()
 
 app.use(express.static(path.join(__dirname, 'build')))
-app.use(bodyParser.json({ type: 'application/*+json' }))
+app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
-  extended: true
+  extended: true 
 }));
 
 app.get ('/chess/', function (req, res) {
@@ -63,6 +63,10 @@ app.get('/chess/load/', (req, res) => {
 })
 
 app.post('/chess/score/', (req, res) => {
+  console.log(req.body)
+})
+
+app.post('/chess/email/', (req, res) => {
   console.log(req.body)
 })
 
