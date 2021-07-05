@@ -50,6 +50,9 @@ var app = express()
 
 app.use(express.static(path.join(__dirname, 'build')))
 app.use(bodyParser.json({ type: 'application/*+json' }))
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 
 app.get ('/chess/', function (req, res) {
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
@@ -59,7 +62,7 @@ app.get('/chess/load/', (req, res) => {
   res.send(fens)
 })
 
-app.post('/chess/score', (req, res) => {
+app.post('/chess/score/', (req, res) => {
   console.log(req.body)
 })
 

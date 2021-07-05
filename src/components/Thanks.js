@@ -5,6 +5,10 @@ import axios from 'axios'
 import Test from './Test'
 import ReactDOM from 'react-dom'
 
+const api = axios.create({
+baseURL: 'https://kaderarnold.com:4431/chess' 
+})
+
 function Thanks (props) {
 
     const [titles, setTitles] = useState(props.titles)
@@ -14,11 +18,14 @@ function Thanks (props) {
     function score () {
         var count = 0
         for (var i = 0; i < answers.length; i++) {
+            if (moves[i][0] == 'p') {
+              moves[i] = moves[i].replace('p', '')
+            }
             if (answers[i] === moves[i]) {
                 count++
             }
         } 
-        return parseFloat(count/40.0 * 100)
+        return parseFloat((count/parseFloat(answers.length))* 100)
     }
 
     async function titles_show () {
@@ -43,14 +50,15 @@ function Thanks (props) {
     }
     function make_obj () {
 
-        var obj = {}
-        for (var i = 0; i < answers.length; i++) {
-          obj[i+1] = moves[i] 
-        }
+        console.log(moves)
+        var o = {}
+        for (var i = 0; i < moves.length; i++) {
+          o['q'+String(i+1)] = moves[i] 
 
-        console.log(obj)
+        }
+        console.log(o)
         // axios post request
-        axios.post('https://kaderarnold.com:4431/chess/score', JSON.stringify(obj))
+        api.post('/score', JSON.stringify(o))
             .then(response => {
                 console.log(response)
             })
@@ -60,7 +68,6 @@ function Thanks (props) {
 
     }
     
-
     titles_show()
     return (
 		<Card>
