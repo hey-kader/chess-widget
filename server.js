@@ -5,6 +5,8 @@ const GoogleSpreadsheet = require('google-spreadsheet')
 const { promisify } = require ('util')
 
 const PORT = 3001  
+const IP = "66.85.133.188"
+
 const fs = require('fs')
 
 const bodyParser = require ('body-parser')
@@ -112,10 +114,10 @@ const ssl = {
     cert: fs.readFileSync('ssl/kaderarnold_com.crt')
 }
 
-app.listen(PORT)
+app.listen(PORT, IP)
 
 const server = https.createServer(ssl, app) 
-server.listen('443', function () {
+server.listen('443', IP, function () {
     console.log ('Serving Board at https://kaderarnold.com/chess/')
 })
 
