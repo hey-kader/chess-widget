@@ -7,12 +7,19 @@ import axios from "axios"
 function Board (props) {
     
     const [fen, setFen] = useState(props.fen)
+    let [width, setWidth] = useState("")
 
     let game = useRef(null)
     useEffect (() => {
       if (game !== null) {
         game.current = new Chess (fen)
-        console.log(window.innerWidth)
+      }
+
+      if (window.innerWidth > 800) {
+        setWidth("500")
+      }
+      else {
+        setWidth("330")
       }
     }, [])
 
@@ -46,7 +53,7 @@ function Board (props) {
             <Chessboard
                 position={fen}
                 onDrop={onDrop}
-                width={"330"}
+                width={width}
             />
         </div>
     )

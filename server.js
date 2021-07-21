@@ -20,7 +20,6 @@ async function accessSpreadsheet() {
   await promisify (doc.useServiceAccountAuth)(creds)
   const info = await promisify(doc.getInfo)()
   const sheet = info.worksheets[0]
-  console.log(sheet.title)
 
   const rows = await promisify (sheet.getRows) ({
     offset: 1
@@ -33,31 +32,51 @@ async function accessSpreadsheet() {
       if (sp[i].length == 1 && 
       (sp[i] == 'b' || sp[i] == 'w')
         ) {
-        console.log(sp[i])
         color = sp[i]
         answers.push(row.answer)
       }
     }
     fens.push({id: answers.length, fen: row.fen, answer: row.answer, color: color, title: row.title})
   })
-  console.log(fens)
+//  console.log(fens)
 
 }
 
+let data = [] 
+
 accessSpreadsheet()
 
-async function write_email (n, e) {
+async function write_email (row) {
 
   const doc = new GoogleSpreadsheet('1NwgE2O3xMP30vYXEU90iCKUHVHtULrRxKmZGcd820Yg');
   await promisify (doc.useServiceAccountAuth)(creds)
   const info = await promisify(doc.getInfo)()
+
   var new_sheet = info.worksheets[1]
-  console.log(new_sheet.title)
-  let rows = await promisify (new_sheet.getRows) ({
-    offset: 1
-  })
-  const count = new_sheet.rowCount
-  console.log(count)
+  
+  data = row
+  await promisify (new_sheet.addRow)(row)
+  
+}
+
+async function write_data (row) {
+
+  var o = {
+    email: row[0], 
+    name: row[1] 
+  }
+
+  for (var i = 1; i < row.length+1; i++) {
+    o['q'+String(i)] = row[i+1]
+  }
+
+  console.log(o)
+
+  const doc = new GoogleSpreadsheet('1NwgE2O3xMP30vYXEU90iCKUHVHtULrRxKmZGcd820Yg');
+  await promisify (doc.useServiceAccountAuth)(creds)
+  const info = await promisify(doc.getInfo)()
+  var new_sheet = info.worksheets[2]
+  await promisify (new_sheet.addRow)(o)
   
 }
 
@@ -79,12 +98,13 @@ app.get('/chess/load/', (req, res) => {
 
 app.post('/chess/score/', (req, res) => {
   console.log(req.body)
+  write_data(req.body)
+  res.send(true)
 })
 
 app.post('/chess/email/', (req, res) => {
-  console.log(req.body.name)
-  console.log(req.body.email)
-  write_email (req.body.name, req.body.email)
+  console.log(req.body)
+  write_email (req.body)
 })
 
 const ssl = {
@@ -93,10 +113,10 @@ const ssl = {
 }
 
 app.listen(PORT)
-const server = https.createServer(ssl, app) 
-server.listen('4431', function () {
-    console.log ('Serving Board at https://kaderarnold.com:4431/chess/')
 
+const server = https.createServer(ssl, app) 
+server.listen('443', function () {
+    console.log ('Serving Board at https://kaderarnold.com/chess/')
 })
 
 

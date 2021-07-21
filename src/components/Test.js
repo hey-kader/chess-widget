@@ -10,6 +10,9 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 let a = []
 let titles = []
 
+let _name = ''
+let _email = ''
+
 require ('./Test.css')
 require ('../App.css')
 
@@ -24,7 +27,7 @@ function* iter (fenlist) {
             else {
               c = "Black"
             } 
-            document.getElementById("title").innerHTML = fenlist[i].id + '. '+ c + ' to Move'
+            document.getElementById("title").innerText = fenlist[i].id + '. '+ c + ' to Move'
             document.getElementById("fen").innerHTML = fenlist[i].fen
             document.getElementById("answer").innerHTML = fenlist[i].answer
             document.getElementById("id").innerHTML = fenlist[i].id
@@ -34,7 +37,6 @@ function* iter (fenlist) {
 
             a.push(fenlist[i].answer)
             titles.push(fenlist[i].title)
-            console.log(a)
 
            yield fenlist[i].fen
         }
@@ -78,12 +80,10 @@ function append_to_table () {
 	if (sub.innerHTML.length != 0) { 
 		document.getElementById("table-body").append(clone)
 	}
-
-
 	
 }
 
-function handle_click (f, pr) {
+function handle_click (f, pr, user) {
     console.log(f)
     if (typeof(f) !== "undefined") {
 
@@ -92,8 +92,8 @@ function handle_click (f, pr) {
         //document.getElementById("playerMove").innerHTML = ""
         //document.getElementById("id").innerHTML = ""
         //document.getElementById("answer").innerHTML = ""
-        document.getElementById('next').disabled = true 
-        document.getElementById('reset').disabled = true
+//document.getElementById('next').disabled = true 
+//document.getElementById('reset').disabled = true
         ReactDOM.unmountComponentAtNode(document.getElementById("board"))
         const board = <Board fen={f} />
             ReactDOM.render(board, document.getElementById("board"))
@@ -103,10 +103,10 @@ function handle_click (f, pr) {
 
         ar.push(document.getElementById("playerMove").innerHTML)
         console.log(f)
-		document.getElementById("playerMove").innerHTML = ""
-		document.getElementById("id").innerHTML = ""
-		document.getElementById("answer").innerHTML = ""
-        const thanks = <Thanks titles={titles} moves={ar} answers={a} />
+        document.getElementById("playerMove").innerHTML = ""
+        document.getElementById("id").innerHTML = ""
+        document.getElementById("answer").innerHTML = ""
+        const thanks = <Thanks name={_name} email={_email} titles={titles} moves={ar} answers={a} />
         ReactDOM.render(thanks, document.getElementById("root"))
     }
 }
@@ -118,103 +118,112 @@ function reset_click () {
         ReactDOM.render(board, document.getElementById("board"))
     document.getElementById('next').disabled = true
     document.getElementById('reset').disabled = true
-	document.getElementById("playerMove").innerHTML = ""
+    document.getElementById("playerMove").innerHTML = ""
 }
 
 const api = axios.create ({
-    baseURL: "https://kaderarnold.com:4431/chess"
+    baseURL: "https://kaderarnold.com/chess"
 })
+
+
 
 class Test extends Component {
 
     state = {
         fens: [],
         move: "",
-        moves: []
+        moves: [],
+        user: []
     }
     
     constructor () {
         super()
-      api.get ('/load').then (res => {
+        api.get ('/load').then (res => {
             this.setState({fens: res.data})
-            console.log(this.state.fens)
+
         })
     }
 
-    componentWillRecieveProps() {
-        console.log(this.props)
-    }
     componentDidMount() {
+      console.log('mount')
       window.scrollTo(0, 1)
+      console.log("NAME")
+      _name = this.props.name
+      _email = this.props.email
+
+      console.log(_name)
+      console.log(_email)
     }
 
 	componentWillUpdate() {
 		console.log('update')
+    console.log(window.innerWidth)
 
 	}
     render () {
+
       const style = {
         display: "flex",
         justifyContent: "center",
-        alignItems: "center" 
+        alignItems: "center"
       }
+
         const it = iter(this.state.fens)
         let t = it.next().value
+        
         return (
-			<div className="wrapper">
-				<Tabs defaultActiveKey="game" id="game">
-					<Tab eventKey="game" title="game">
-					<Card>
-						<Card.Header>
-						<Card.Title>
-							<h3 style={{margin: '1rem 0rem', display: 'block', width: '100%'}} id="title"></h3>
-						</Card.Title>
-						</Card.Header>
-						<Card.Body style={style}>
-						<h3 id="fen" hidden></h3>
-						<h2 id="playerMove" hidden></h2>
-						<h2 id="answer" hidden></h2>
-						<h2 id="id" hidden></h2>
-						<div id="board" className="wrapper">
-							{typeof(t) !== "undefined" ? <Board fen={t} /> : ""}
-						</div>
-						</Card.Body>
-						<Card.Footer style={style}>
-              <Button style={{width: '160px'}} onClick={() => handle_click(it.next().value, this.props)} id="next" variant="info" disable={true}>next</Button>
-              <Button style={{marginLeft: '0.2rem', width: '160px'}} id="reset" onClick={() => reset_click()} variant="warning" disable={true}>reset</Button>
-						</Card.Footer>
-					</Card>
-					</Tab>
+        <div className="wrapper">
+          <Tabs defaultActiveKey="game" id="game">
+            <Tab eventKey="game" title="game">
+            <Card>
+              <Card.Header>
+              <Card.Title style={{display: 'inline-block', justifyContent: 'center', textAlign: 'center', alignItems: 'center'}}>
+                <h3 style={{display: 'inline-block', justifyContent: 'center', textAlign: 'center', alignItems: 'center'}} id="title"></h3>
+              </Card.Title>
+              </Card.Header>
+              <Card.Body style={style}>
+              <h3 id="fen" hidden></h3>
+              <h2 id="playerMove" hidden></h2>
+              <h2 id="answer" hidden></h2>
+              <h2 id="id" hidden></h2>
+              <div id="board" className="wrapper">
+                {typeof(t) !== "undefined" ? <Board fen={t} /> : ""}
+              </div>
+              </Card.Body>
+              <Card.Footer style={style}>
+                <Button style={{width: '160px'}} onClick={() => handle_click(it.next().value, this.state.user, this.props) } id="next" variant="info" disabled={false}>next</Button>
+                <Button style={{marginLeft: '0.2rem', width: '160px'}} id="reset" onClick={() => reset_click()} variant="warning" disabled={false}>reset</Button>
+              </Card.Footer>
+            </Card>
+            </Tab>
 
-					<Tab eventKey="score" title="score">
-							<Card>
-								<Card.Header>
-									<Card.Title>
-										<h3 style={{margin: '1rem 0rem', display: 'block', width: '90%'}}>Score</h3>
-									</Card.Title>
-								</Card.Header>
+            <Tab eventKey="score" title="score" id="score-tab" >
+                <Card>
+                  <Card.Header>
+                    <Card.Title>
+                      <h3 style={{margin: '1rem 0rem', display: 'block', width: '90%'}}>Score</h3>
+                    </Card.Title>
+                  </Card.Header>
 
-								<Card.Body style={style}>
-									<Table striped bordered hover>
-										<thead>
-											<tr>
-												<th>#</th>
-												<th>response</th>
-												<th>answer</th>
-											</tr>
-										</thead>
-										<tbody id="table-body">
-										</tbody>
-									</Table>
-								</Card.Body>
-
-								<Card.Footer>
-								</Card.Footer>
-
-						</Card>
-					</Tab>
-				</Tabs>
-			</div>
+                  <Card.Body style={style}>
+                    <Table striped bordered hover>
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>response</th>
+                          <th>answer</th>
+                        </tr>
+                      </thead>
+                      <tbody id="table-body">
+                      </tbody>
+                    </Table>
+                  </Card.Body>
+                  <Card.Footer>
+                  </Card.Footer>
+              </Card>
+            </Tab>
+          </Tabs>
+        </div>
         )
     }
 }
