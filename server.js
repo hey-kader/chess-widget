@@ -4,12 +4,12 @@ const https = require ('https')
 const GoogleSpreadsheet = require('google-spreadsheet')
 const { promisify } = require ('util')
 
-const PORT = 3001  
+const PORT = 3001 
 const IP = "66.85.133.188"
 
 const fs = require('fs')
 
-const bodyParser = require ('body-parser')
+const bodyParser = require ('body-parser') 
 const creds = require ('./client_secret.json')
 
 const fens = []
@@ -20,9 +20,9 @@ async function accessSpreadsheet() {
 
   const doc = new GoogleSpreadsheet('1NwgE2O3xMP30vYXEU90iCKUHVHtULrRxKmZGcd820Yg');
   await promisify (doc.useServiceAccountAuth)(creds)
+
   const info = await promisify(doc.getInfo)()
   const sheet = info.worksheets[0]
-
   const rows = await promisify (sheet.getRows) ({
     offset: 1
   })
@@ -85,10 +85,15 @@ async function write_data (row) {
 var app = express()
 
 app.use(express.static(path.join(__dirname, 'build')))
+
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({
   extended: true 
-}));
+}))
+
+app.get('/', function (req, res) {
+	res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 app.get ('/chess/', function (req, res) {
     res.sendFile(path.join(__dirname, 'build', 'index.html'))
@@ -108,6 +113,7 @@ app.post('/chess/email/', (req, res) => {
   console.log(req.body)
   write_email (req.body)
 })
+
 
 const ssl = {
     key: fs.readFileSync('ssl/kaderarnold_com.key'),
